@@ -6,7 +6,7 @@ HERE = pathlib.Path(__file__).parent
 
 setup(
     name='socket_nodes',
-    version='0.0.3',
+    version='0.0.4',
     description='TCP socket nodes and server',
     author='Laktionov Mikhail',
     author_email = 'miklakt@gmail.com',
