@@ -22,5 +22,5 @@ def create_server_and_nodes(scripts: list,
         popen_list = [str(item) for item in popen_list]
         print(f"Popen({popen_list}, {popen_kwargs})")
         subprocess.Popen(popen_list, **popen_kwargs)
-        server.wait_connection()
+        server.wait_connection(timeout = 600)
     return server

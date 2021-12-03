@@ -162,6 +162,7 @@ class Server():
         """setup the TCP socket server that gather info from the nodes,
         make server available for nodes to connect
         """
+        logger.info(f'Setting the socket up...')
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_socket.setblocking(0)
@@ -173,10 +174,10 @@ class Server():
             #the port has been assigned by OS
             self.PORT=self.socket.getsockname()[1]
             logger.info(f'The port has been assigned by OS, PORT : {self.PORT}')
-        logger.info(f'Started')
+        logger.info(f'Setup is done')
 
 
-    def wait_for_connections(self, n : int, timeout : int = 60) -> None:
+    def wait_for_connections(self, n : int, timeout : int = 600) -> None:
         """Wait for n nodes to connect, should be used to assure that all
         clients are connected
         Args:
@@ -191,7 +192,7 @@ class Server():
             else:
                 pass
 
-    def wait_connection(self, timeout : int = 60) -> None:
+    def wait_connection(self, timeout : int = 600) -> None:
         """Wait for new connection
         Args:
             timeout (int, optional): Timeout in seconds. Defaults to 10.
@@ -414,10 +415,10 @@ class Server():
         data, while the server is active.
         Blocking call, use threading or multiproccessing
         """
-        logger.info("server main loop has started")
+        logger.info("Server main loop has started")
         while self.active:
             self.listen()
-        logger.info("server main loop done")
+        logger.info("Server main loop finished")
 
 
     def shutdown(self):
