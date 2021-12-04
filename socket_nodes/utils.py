@@ -6,6 +6,7 @@ import subprocess
 def create_server_and_nodes(scripts: list,
         args_list = None, python_executable = 'python',
         ServerClass = ServerNoDisconnectionAllowed,
+        connection_timeout_s = 600,
         **popen_kwargs
         ):
     server = ServerClass()
@@ -22,5 +23,5 @@ def create_server_and_nodes(scripts: list,
         popen_list = [str(item) for item in popen_list]
         print(f"Popen({popen_list}, {popen_kwargs})")
         subprocess.Popen(popen_list, **popen_kwargs)
-        server.wait_connection(timeout = 600)
+        server.wait_connection(timeout = connection_timeout_s)
     return server
