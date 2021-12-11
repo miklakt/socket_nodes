@@ -9,6 +9,11 @@ import time
 
 logger = logging.getLogger(__name__)
 
+params = {'LOG_REQUESTS_INFO' : True}
+
+def set_params(**kwargs):
+    params.update(kwargs)
+
 class RequestStatus(Enum):
     """
     Possible request status
@@ -119,7 +124,7 @@ class ConnectedNode:
         Request._result = result
         Request.status = RequestStatus.Done
         #if debug, we are already getting all the info needed
-        if not logger.isEnabledFor(logging.DEBUG):
+        if params['LOG_REQUESTS_INFO']:
             logger.info(f'node_{self.ids} : {Request.request} -> {result}')
 
     def __del__(self):
