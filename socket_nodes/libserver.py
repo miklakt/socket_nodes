@@ -9,7 +9,7 @@ import time
 
 logger = logging.getLogger(__name__)
 
-params = {'LOG_REQUESTS_INFO' : True}
+params = {'LOG_REQUESTS_INFO' : False}
 
 def set_params(**kwargs):
     params.update(kwargs)
