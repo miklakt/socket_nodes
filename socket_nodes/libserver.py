@@ -146,6 +146,7 @@ class ConnectedNode:
                     raise result
                 elif params['ON_NODE_ERROR'] == 'log_warning':
                     logger.warning(f"An error occurred in node_{self.ids} when calculating {Request.request}")
+                    logger.exception(result)
                     return
 
         Request._result = result
