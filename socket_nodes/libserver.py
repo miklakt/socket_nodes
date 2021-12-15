@@ -9,7 +9,13 @@ import time
 
 logger = logging.getLogger(__name__)
 
-params = {'LOG_REQUESTS_INFO' : False}
+params = {
+    #log every finished request
+    'LOG_REQUESTS_INFO' : False,
+    #raise exception when an Exception received from a node
+    #'raise_error'|'log_warning'|'ignore'
+    'ON_NODE_ERROR' : 'log_warning',
+    }
 
 def set_params(**kwargs):
     params.update(kwargs)
@@ -21,7 +27,7 @@ class RequestStatus(Enum):
     InProgress = auto()
     Done = auto()
     Disconnected = auto()
-    #ErrorOccurred = auto()
+    ErrorOccurred = auto()
     #Timeout = auto()
 
 
@@ -70,6 +76,8 @@ class RequestClass:
             if self.status == RequestStatus.Done:
                 return self._result
             if self.status == RequestStatus.Disconnected:
+                return self._result
+            if self.status == RequestStatus.ErrorOccurred:
                 return self._result
 
     def __repr__(self) -> str:
@@ -121,11 +129,27 @@ class ConnectedNode:
 
         """
         Request = self.requests.pop(0)
-        Request._result = result
-        Request.status = RequestStatus.Done
-        #if debug, we are already getting all the info needed
+
+        #if log every finished request
         if params['LOG_REQUESTS_INFO']:
             logger.info(f'node_{self.ids} : {Request.request} -> {result}')
+
+        #'raise_error'|'log_warning'|'ignore'
+        if  params['ON_NODE_ERROR'] != 'ignore':
+            #when Exception received
+            if isinstance(result, Exception):
+                Request.status = RequestStatus.ErrorOccurred
+                Request._result = result
+                if params['ON_NODE_ERROR'] == 'raise_error':
+                    logger.critical(f"An error occurred in node_{self.ids} when calculating {Request.request}")
+                    logger.exception(result)
+                    raise result
+                elif params['ON_NODE_ERROR'] == 'log_warning':
+                    logger.warning(f"An error occurred in node_{self.ids} when calculating {Request.request}")
+                    return
+
+        Request._result = result
+        Request.status = RequestStatus.Done
 
     def __del__(self):
         logger.warning('Node is disconnected')
